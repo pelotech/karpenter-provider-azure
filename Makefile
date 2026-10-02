@@ -7,6 +7,8 @@ GOFLAGS ?= $(LDFLAGS)
 
 # # CR for local builds of Karpenter
 KARPENTER_NAMESPACE ?= kube-system
+KO_DOCKER_REPO ?= ghcr.io/pelotech/karpenter-azure
+KO_TAG ?= v1.14.3x
 
 # Common Directories
 # TODO: revisit testing tools (temporarily excluded here, for make verify)
@@ -128,6 +130,11 @@ licenses: download ## Verifies dependency licenses
 	LICENSEFILE=$$(mktemp /tmp/licenses-XXXXXX.csv) && \
 	go-licenses csv ./... > $$LICENSEFILE && \
 	! grep -v -e 'MIT' -e 'Apache-2.0' -e 'BSD-3-Clause' -e 'BSD-2-Clause' -e 'ISC' -e 'MPL-2.0' $$LICENSEFILE
+
+image: ## Build and push the Karpenter controller image to KO_DOCKER_REPO using ko build (CGO off, no Linux cross compilers needed)
+	export KO_CONFIG_PATH=$$(mktemp -d) && trap 'rm -rf $$KO_CONFIG_PATH' EXIT && \
+	sed 's/CGO_ENABLED=1/CGO_ENABLED=0/' .ko.yaml > $$KO_CONFIG_PATH/.ko.yaml && \
+	KO_DOCKER_REPO="$(KO_DOCKER_REPO)" ko build -t $(KO_TAG) --bare github.com/Azure/karpenter-provider-azure/cmd/controller
 
 codegen: codegen-prod codegen-test ## Auto generate files based on Azure API responses
 

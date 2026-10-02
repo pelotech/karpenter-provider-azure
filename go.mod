@@ -63,6 +63,8 @@ require (
 	sigs.k8s.io/karpenter v1.14.1
 )
 
+replace sigs.k8s.io/karpenter v1.14.1 => ../karpenter
+
 require (
 	cel.dev/expr v0.25.2 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.12.0 // indirect

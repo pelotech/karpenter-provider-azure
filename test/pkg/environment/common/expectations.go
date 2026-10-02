@@ -1168,7 +1168,7 @@ func (env *Environment) GetDaemonSetCount(np *karpv1.NodePool) int {
 		if err := scheduling.Taints(nodeClaimTemplate.Spec.Taints).ToleratesPod(p); err != nil {
 			return false
 		}
-		if err := nodeClaimTemplate.Requirements.Compatible(scheduling.NewPodRequirements(p), scheduling.AllowUndefinedWellKnownLabels); err != nil {
+		if err := nodeClaimTemplate.Requirements.Compatible(scheduling.NewPodRequirements(p, nil), scheduling.AllowUndefinedWellKnownLabels); err != nil {
 			return false
 		}
 		return true
@@ -1189,7 +1189,7 @@ func (env *Environment) GetDaemonSetOverhead(np *karpv1.NodePool) corev1.Resourc
 		if err := scheduling.Taints(nodeClaimTemplate.Spec.Taints).ToleratesPod(p); err != nil {
 			return nil, false
 		}
-		if err := nodeClaimTemplate.Requirements.Compatible(scheduling.NewPodRequirements(p), scheduling.AllowUndefinedWellKnownLabels); err != nil {
+		if err := nodeClaimTemplate.Requirements.Compatible(scheduling.NewPodRequirements(p, nil), scheduling.AllowUndefinedWellKnownLabels); err != nil {
 			return nil, false
 		}
 		return p, true
